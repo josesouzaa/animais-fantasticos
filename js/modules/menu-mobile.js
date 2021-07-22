@@ -1,21 +1,32 @@
 import outsideClick from './outsideclick.js'
 
-export default function initMenuMobile() {
+export default class MenuMobile {
+  constructor(menuBotton, menuList, events) {
+    this.menuBotton = document.querySelector(menuBotton)
+    this.menuList = document.querySelector(menuList)
+    this.openMenu = this.openMenu.bind(this)
+    this.activeClass = 'active'
+    if (events === undefined) this.events = ['touchstart', 'click']
+    else this.events = events
+  }
 
-  const menuBotton = document.querySelector('[data-menu="button"]')
-  const menuList = document.querySelector('[data-menu="list"]')
-  const eventos = ['click', 'touchstart']
-
-  function openMenu() {
-    menuList.classList.add('active')
-    menuBotton.classList.add('active')
-    outsideClick(menuList, eventos, () => {
-      menuList.classList.remove('active')
-      menuBotton.classList.remove('active')
+  openMenu() {
+    this.menuList.classList.add(this.activeClass)
+    this.menuBotton.classList.add(this.activeClass)
+    outsideClick(this.menuList, this.events, () => {
+      this.menuList.classList.remove(this.activeClass)
+      this.menuBotton.classList.remove(this.activeClass)
     })
   }
 
-  if (menuBotton) {
-    eventos.forEach(evento => menuBotton.addEventListener(evento, openMenu))
+  addMenuMobileEvents() {
+    this.events.forEach(evento => this.menuBotton.addEventListener(evento, this.openMenu))
+  }
+
+  init() {
+    if (this.menuBotton && this.menuList) {
+      this.addMenuMobileEvents()
+    }
+    return this
   }
 }
